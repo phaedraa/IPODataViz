@@ -1,12 +1,15 @@
 //var $ = jQuery = require('jquery');
 //require('.jquery-csv/src/jquery.csv.js');
 
-$(document).ready(function() {
-      // var myEl = document.getElementById('view_details_1');
-// 
-      // myEl.addEventListener('click', function() {
-      //     alert('Hello world');
-      // }, false);
+$(document).ready(function() { 
+    var IPOData;
+    Papa.parse("/TheInformation_DataStoryteller_02222016-3.csv", {
+      download: true,
+      complete: function(results) {
+        IPOData = results;
+        console.log(results);
+      }
+    });
 
       if(isAPIAvailable()) {
         console.log('here');
