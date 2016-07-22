@@ -1,6 +1,16 @@
+//var $ = jQuery = require('jquery');
+//require('.jquery-csv/src/jquery.csv.js');
+
 $(document).ready(function() {
+      // var myEl = document.getElementById('view_details_1');
+// 
+      // myEl.addEventListener('click', function() {
+      //     alert('Hello world');
+      // }, false);
+
       if(isAPIAvailable()) {
-        $('btn btn-default').first().bind('change', handleFileSelect);
+        console.log('here');
+        $('#my-file-selector').bind('change', handleFileSelect);
       }
     });
 
@@ -28,9 +38,39 @@ $(document).ready(function() {
     }
 
     function handleFileSelect(evt) {
+      // console.log('handleFileSelect');
+      // var csv = "file:///C:/Users/phaedrarandolph/IPODataViz/TheInformation_DataStoryteller_02222016-3.csv";
+      // var read = readTextFile(csv);
+      // console.log('read', read);
+ 
       var files = evt.target.files; // FileList object
       var file = files[0];
-      console.log('files', files);
+      // console.log('file', file);
+      console.log(evt);
+      console.log('f', evt.target.files);
+      console.log('file', file);
+      
+      var data = null;
+      var reader = new FileReader();
+      reader.readAsText(file);
+      reader.onload = function(event) {
+        var csvData = event.target.result;
+        data = $.csv.toArrays(csvData);
+        console.log('data', data);
+        if (data && data.length > 0) {
+          alert('Imported -' + data.length + '- rows successfully!');
+        } else {
+          alert('No data to import!');
+        }
+      };
+      reader.onerror = function() {
+        alert('Unable to read ' + file.fileName);
+      };
+       
+
+      // var data = $.csv.toObjects(files);
+      // console.log('data', data);
+
       // read the file metadata
       var output = ''
           output += '<span style="font-weight:bold;">' + escape(file.name) + '</span><br />\n';
@@ -39,10 +79,28 @@ $(document).ready(function() {
           output += ' - LastModified: ' + (file.lastModifiedDate ? file.lastModifiedDate.toLocaleDateString() : 'n/a') + '<br />\n';
 
       // read the file contents
-      printTable(file);
+      // printTable(file);
 
       // post the results
-      $('#list').append(output);
+      console.log('output', output);
+      return;
+    }
+
+    function readTextFile(file) {
+      var rawFile = new XMLHttpRequest();
+      rawFile.open("GET", file, true);
+      rawFile.onreadystatechange = function ()
+      {
+          if(rawFile.readyState === 4)
+          {
+              if(rawFile.status === 200 || rawFile.status == 0)
+              {
+                  var allText = rawFile.responseText;
+                  alert(allText);
+              }
+          }
+      }
+      rawFile.send(null);
     }
 
     function printTable(file) {
