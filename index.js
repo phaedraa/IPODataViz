@@ -1,19 +1,225 @@
-//var $ = jQuery = require('jquery');
-//require('.jquery-csv/src/jquery.csv.js');
+var IPO_DATA_CSV = "/TheInformation_DataStoryteller_02222016-3.csv";
 
 $(document).ready(function() { 
-    var IPOData;
-    Papa.parse("/TheInformation_DataStoryteller_02222016-3.csv", {
+    var dataTitles = {'IPOTitle': '', 'percProfitTitle': ''};
+        years = {'title': '', data: []};
+        techData = {'title': '', numIPOs: [], 'percProfit': []};
+        otherData = {'title': '', 'numIPOs': [], 'percProfit': []}
+        options = {
+          title: {text: '',x: -20 /*center*/},
+          subtitle: {text: '',x: -20},
+          xAxis: {categories: '',},
+          yAxis: {title: {text:''}, plotLines: [{
+            value: 0,
+            width: 1,
+            color: '#808080'
+          }]},
+          tooltip: {valueSuffix: ''},
+          legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+          },
+          series:[],
+        };
+
+    Papa.parse(IPO_DATA_CSV, {
       download: true,
       complete: function(results) {
-        IPOData = results;
-        console.log(results);
+        parseData(results.data);
       }
     });
 
-      if(isAPIAvailable()) {
+    function parseData(Array: IPOData): void {
+      console.log(IPOData);
+      dataTitles.IPOTitle = IPOData[1][1];
+      dataTitles.percProfitTitle = IPOData[1][2];
+      years.title = IPOData[1][0];
+      techData.title = IPOData[0][1];
+      otherData.title = IPOData[0][3];
+      IPOData = IPOData.slice(2);
+      
+      for(var i=0; i<IPOData.length; i++) {
+        years.data.push(IPOData[i][0]);
+        techData.numIPOs.push(parseInt(IPOData[i][1]));
+        techData.percProfit.push(parseInt(IPOData[i][2]));
+        otherData.numIPOs.push(parseInt(IPOData[i][3]));
+        otherData.percProfit.push(parseInt(IPOData[i][4]));
+      }
+    }
+
+    $('#view_details_1').bind('click', handleSelectTimeSeries);
+    $('#view_details_2').bind('click', handleSelectDualAxisTimeSeries);
+    $('#view_details_3').bind('click', handleSelectYoYDualAxisTimeSeries);
+
+    function handleSelectYoYDualAxisTimeSeries(event): void {
+      
+      function getPercDiff(Number: val1, Number: val2): Number {
+
+      }
+
+      function getYoYPercChangesData(): Object {
+        var YoYChangesDataObj = {techIPOs: [], techPercProfits: [], otherIPOs: [], otherPercProfits: []};
+        for(var j=0; j<years.data.length - 1; j++) {
+          var YoY = 100 * (dataArray[j+1] - dataArray[j]) / dataArray[j];
+
+          YoYChangesDataObj.techIPOs.push(getPercDiff(techData.numIPOs[j], techData.numIPOs[j+1]);
+          techData.percProfit.push(parseInt(IPOData[i][2]));
+          otherData.numIPOs.push(parseInt(IPOData[i][3]));
+          otherData.percProfit.push(parseInt(IPOData[i][4]));
+        }
+
+      }
+
+      var optionsTS = Object.assign({}, options);
+          optionsTS.chart = {zoomType: 'xy'};
+          optionsTS.title.text = 
+            dataTitles.IPOTitle + '& ' + dataTitles.percProfitTitle;
+          optionsTS.subtitle.text =
+            'Split by ' + techData.title + ' and ' + otherData.title;
+          optionsTS.xAxis = [{categories: years.data.slice(1), crosshair: true}];
+          optionsTS.yAxis = [{ // Primary yAxis
+            labels: {
+                format: '{value}%',
+                style: {color: Highcharts.getOptions().colors[0]}
+            },
+            title: {
+                text: dataTitles.percProfitTitle,
+                style: {color: Highcharts.getOptions().colors[0]}
+            }
+        }, { // Secondary yAxis
+            title: {
+                text: dataTitles.IPOTitle,
+                style: {color: Highcharts.getOptions().colors[1]}
+            },
+            labels: {
+                style: {color: Highcharts.getOptions().colors[1]}
+            },
+            opposite: true
+        }];
+        optionsTS.tooltip = {shared: true},
+        optionsTS.legend = {
+            layout: 'vertical',
+            align: 'left',
+            x: years.data.length * 25,
+            verticalAlign: 'top',
+            y: 0,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+        };
+        optionsTS.series = [{
+            name: techData.title + '- ' + dataTitles.percProfitTitle,
+            type: 'column',
+            data: techData.percProfit,
+            tooltip: {valueSuffix: '%'}
+        }, {
+            name: otherData.title + '- ' + dataTitles.percProfitTitle,
+            type: 'column',
+            data: otherData.percProfit,
+            tooltip: {valueSuffix: '%'}
+        },
+        {
+            name: otherData.title + '- ' + dataTitles.IPOTitle,
+            type: 'spline',
+            yAxis: 1,
+            data: otherData.numIPOs,
+        }, 
+        {
+            name: techData.title + '- ' + dataTitles.IPOTitle,
+            type: 'spline',
+            yAxis: 1,
+            data: techData.numIPOs,
+        }];
+      var chart = $('#chart').highcharts(optionsTS);
+
+    }
+
+
+    function handleSelectDualAxisTimeSeries(event) {
+      var optionsTS = Object.assign({}, options);
+          optionsTS.chart = {zoomType: 'xy'};
+          optionsTS.title.text = 
+            dataTitles.IPOTitle + '& ' + dataTitles.percProfitTitle;
+          optionsTS.subtitle.text =
+            'Split by ' + techData.title + ' and ' + otherData.title;
+          optionsTS.xAxis = [{categories: years.data, crosshair: true}];
+          optionsTS.yAxis = [{ // Primary yAxis
+            labels: {
+                format: '{value}%',
+                style: {color: Highcharts.getOptions().colors[0]}
+            },
+            title: {
+                text: dataTitles.percProfitTitle,
+                style: {color: Highcharts.getOptions().colors[0]}
+            }
+        }, { // Secondary yAxis
+            title: {
+                text: dataTitles.IPOTitle,
+                style: {color: Highcharts.getOptions().colors[1]}
+            },
+            labels: {
+                style: {color: Highcharts.getOptions().colors[1]}
+            },
+            opposite: true
+        }];
+        optionsTS.tooltip = {shared: true},
+        optionsTS.legend = {
+            layout: 'vertical',
+            align: 'left',
+            x: years.data.length * 25,
+            verticalAlign: 'top',
+            y: 0,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+        };
+        optionsTS.series = [{
+            name: techData.title + '- ' + dataTitles.percProfitTitle,
+            type: 'column',
+            data: techData.percProfit,
+            tooltip: {valueSuffix: '%'}
+        }, {
+            name: otherData.title + '- ' + dataTitles.percProfitTitle,
+            type: 'column',
+            data: otherData.percProfit,
+            tooltip: {valueSuffix: '%'}
+        },
+        {
+            name: otherData.title + '- ' + dataTitles.IPOTitle,
+            type: 'spline',
+            yAxis: 1,
+            data: otherData.numIPOs,
+        }, 
+        {
+            name: techData.title + '- ' + dataTitles.IPOTitle,
+            type: 'spline',
+            yAxis: 1,
+            data: techData.numIPOs,
+        }];
+      var chart = $('#chart').highcharts(optionsTS);
+
+    }
+
+    function handleSelectTimeSeries(event) {
+      var optionsTS = Object.assign({}, options);
+      optionsTS.title.text = dataTitles.IPOTitle;
+      optionsTS.xAxis.categories = years.data;
+      optionsTS.yAxis.title.text = dataTitles.IPOTitle;
+      optionsTS.series = [{
+        name: techData.title,
+        data: techData.numIPOs,
+      },
+      {
+        name: otherData.title,
+        data: otherData.numIPOs,
+      }];
+      var chart = $('#chart').highcharts(optionsTS);
+      console.log(chart);
+    };
+
+    if(isAPIAvailable()) {
         console.log('here');
-        $('#my-file-selector').bind('change', handleFileSelect);
+        // $('#my-file-selector').bind('change', handleFileSelect);
       }
     });
 
