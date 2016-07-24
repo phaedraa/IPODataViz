@@ -5,24 +5,6 @@ $(document).ready(function() {
         years = {'title': '', data: []};
         techData = {'title': '', numIPOs: [], 'percProfit': []};
         otherData = {'title': '', 'numIPOs': [], 'percProfit': []}
-        options = {
-          title: {text: '',x: -20 /*center*/},
-          subtitle: {text: '',x: -20},
-          xAxis: {categories: '',},
-          yAxis: {title: {text:''}, plotLines: [{
-            value: 0,
-            width: 1,
-            color: '#808080'
-          }]},
-          tooltip: {valueSuffix: ''},
-          legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
-            borderWidth: 0
-          },
-          series:[],
-        };
 
     Papa.parse(IPO_DATA_CSV, {
       download: true,
@@ -31,7 +13,7 @@ $(document).ready(function() {
       }
     });
 
-    function parseData(Array: IPOData): void {
+    function parseData(IPOData) {
       console.log(IPOData);
       dataTitles.IPOTitle = IPOData[1][1];
       dataTitles.percProfitTitle = IPOData[1][2];
@@ -49,284 +31,304 @@ $(document).ready(function() {
       }
     }
 
-    $('#view_details_1').bind('click', handleSelectTimeSeries);
+    $('#view_details_1').bind('click', handleSelectMovingAvgDualAxisTimeSeries);
     $('#view_details_2').bind('click', handleSelectDualAxisTimeSeries);
-    $('#view_details_3').bind('click', handleSelectYoYDualAxisTimeSeries);
+    $('#view_details_3').bind('click', handleSelectYoYSinglelAxisTimeSeries);
 
-    function handleSelectYoYDualAxisTimeSeries(event): void {
-      
-      function getPercDiff(Number: val1, Number: val2): Number {
-
-      }
-
-      function getYoYPercChangesData(): Object {
-        var YoYChangesDataObj = {techIPOs: [], techPercProfits: [], otherIPOs: [], otherPercProfits: []};
-        for(var j=0; j<years.data.length - 1; j++) {
-          var YoY = 100 * (dataArray[j+1] - dataArray[j]) / dataArray[j];
-
-          YoYChangesDataObj.techIPOs.push(getPercDiff(techData.numIPOs[j], techData.numIPOs[j+1]);
-          techData.percProfit.push(parseInt(IPOData[i][2]));
-          otherData.numIPOs.push(parseInt(IPOData[i][3]));
-          otherData.percProfit.push(parseInt(IPOData[i][4]));
-        }
-
-      }
-
-      var optionsTS = Object.assign({}, options);
-          optionsTS.chart = {zoomType: 'xy'};
-          optionsTS.title.text = 
-            dataTitles.IPOTitle + '& ' + dataTitles.percProfitTitle;
-          optionsTS.subtitle.text =
-            'Split by ' + techData.title + ' and ' + otherData.title;
-          optionsTS.xAxis = [{categories: years.data.slice(1), crosshair: true}];
-          optionsTS.yAxis = [{ // Primary yAxis
-            labels: {
-                format: '{value}%',
-                style: {color: Highcharts.getOptions().colors[0]}
-            },
-            title: {
-                text: dataTitles.percProfitTitle,
-                style: {color: Highcharts.getOptions().colors[0]}
-            }
-        }, { // Secondary yAxis
-            title: {
-                text: dataTitles.IPOTitle,
-                style: {color: Highcharts.getOptions().colors[1]}
-            },
-            labels: {
-                style: {color: Highcharts.getOptions().colors[1]}
-            },
-            opposite: true
-        }];
-        optionsTS.tooltip = {shared: true},
-        optionsTS.legend = {
-            layout: 'vertical',
-            align: 'left',
-            x: years.data.length * 25,
-            verticalAlign: 'top',
-            y: 0,
-            floating: true,
-            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
-        };
-        optionsTS.series = [{
-            name: techData.title + '- ' + dataTitles.percProfitTitle,
-            type: 'column',
-            data: techData.percProfit,
-            tooltip: {valueSuffix: '%'}
-        }, {
-            name: otherData.title + '- ' + dataTitles.percProfitTitle,
-            type: 'column',
-            data: otherData.percProfit,
-            tooltip: {valueSuffix: '%'}
-        },
-        {
-            name: otherData.title + '- ' + dataTitles.IPOTitle,
-            type: 'spline',
-            yAxis: 1,
-            data: otherData.numIPOs,
-        }, 
-        {
-            name: techData.title + '- ' + dataTitles.IPOTitle,
-            type: 'spline',
-            yAxis: 1,
-            data: techData.numIPOs,
-        }];
-      var chart = $('#chart').highcharts(optionsTS);
-
+    function getNewDataObj() {
+      return {
+        techIPOs: [],
+        techPercProfits: [],
+        otherIPOs: [],
+        otherPercProfits: [],
+      };
     }
 
+    function handleSelectMovingAvgDualAxisTimeSeries(event) {
+      
+      function getMovingAvg(currAvgArray, nextVal) {
+        var size = currAvgArray.length;
+        if (size === 0) {
+          return nextVal;
+        }
+        var nextAvg = (currAvgArray[size - 1] * size + nextVal) / (size + 1);
+        
+        return Math.round(100 * nextAvg) / 100.0;
+      }
+
+      function getMovingAvgData() {
+        var MovingAvgDataObj = getNewDataObj();
+
+        for (var j=0; j<years.data.length; j++) {
+          MovingAvgDataObj.techIPOs.push(
+            getMovingAvg(MovingAvgDataObj.techIPOs, techData.numIPOs[j])
+          );
+          MovingAvgDataObj.techPercProfits.push(
+            getMovingAvg(MovingAvgDataObj.techPercProfits, techData.percProfit[j])
+          );
+          MovingAvgDataObj.otherIPOs.push(
+            getMovingAvg(MovingAvgDataObj.otherIPOs, otherData.numIPOs[j])
+          );
+          MovingAvgDataObj.otherPercProfits.push(
+            getMovingAvg(MovingAvgDataObj.otherPercProfits, otherData.percProfit[j])
+          );
+        }
+
+        return MovingAvgDataObj;
+      }
+
+      var mvgAvgData = getMovingAvgData();
+      var TSData = [];
+      
+      TSData.push(createSeriesObj(
+        techData.title + ' - ' + dataTitles.IPOTitle,
+        mvgAvgData.techIPOs
+      ));
+      TSData.push(createSeriesObj(
+        otherData.title + ' - ' + dataTitles.IPOTitle,
+        mvgAvgData.otherIPOs
+      ));
+      TSData.push(createSeriesObj(
+        techData.title + ' - ' + dataTitles.percProfitTitle,
+        mvgAvgData.techPercProfits,
+        '%'
+      ));
+      TSData.push(createSeriesObj(
+        otherData.title + ' - ' + dataTitles.percProfitTitle,
+        mvgAvgData.otherPercProfits,
+        '%'
+      ));
+
+      var options = getDualAxisOptionsObj(
+        years.data,
+        TSData,
+        'Moving Averages of ' + dataTitles.IPOTitle + ' & ' + dataTitles.percProfitTitle,
+        'Split by ' + techData.title + ' and ' + otherData.title,
+        dataTitles.percProfitTitle + ' Moving Avg',
+        dataTitles.IPOTitle + ' Moving Avg',
+        [years.data.length * 25, 0],
+        '%',
+        ''
+      );
+
+      return $('#chart').highcharts(options);
+    }
+
+    function handleSelectYoYSinglelAxisTimeSeries(event) {
+      
+      function getPercDiff(val1, val2) {
+        return Math.round(100.0 * (val2 - val1) / val1) / 100.0;
+      }
+
+      function getYoYPercChangesData() {
+        var YoYChangesDataObj = getNewDataObj();
+        
+        for(var j=0; j<years.data.length - 1; j++) {
+          YoYChangesDataObj.techIPOs.push(
+            getPercDiff(techData.numIPOs[j], techData.numIPOs[j+1])
+          );
+          YoYChangesDataObj.techPercProfits.push(
+            getPercDiff(techData.percProfit[j], techData.percProfit[j+1])
+          );
+        }
+
+        return YoYChangesDataObj;
+      }
+
+      var YoYData = getYoYPercChangesData();
+      var TSData = [];
+
+      TSData.push(createSeriesObj(
+        dataTitles.percProfitTitle + ' - Delta',
+        YoYData.techPercProfits,
+        '%',
+        true
+      ));
+      TSData.push(createSeriesObj(
+        dataTitles.IPOTitle + ' - Delta',
+        YoYData.techIPOs,
+        '%',
+        true
+      ));
+      console.log('data', TSData);
+      var options = getSingleAxisOptionsObj(
+        years.data.slice(1),
+        TSData,
+        'Year Over Year % Changes in IPOs & ' + dataTitles.percProfitTitle,
+        '',
+        'YoY Changes (%)',
+        [years.data.length * 10, 10],
+        '%'
+      );
+      console.log(options);
+      return $('#chart').highcharts(options);
+    }
 
     function handleSelectDualAxisTimeSeries(event) {
-      var optionsTS = Object.assign({}, options);
-          optionsTS.chart = {zoomType: 'xy'};
-          optionsTS.title.text = 
-            dataTitles.IPOTitle + '& ' + dataTitles.percProfitTitle;
-          optionsTS.subtitle.text =
-            'Split by ' + techData.title + ' and ' + otherData.title;
-          optionsTS.xAxis = [{categories: years.data, crosshair: true}];
-          optionsTS.yAxis = [{ // Primary yAxis
+      var TSData = [];
+      TSData.push(createSeriesObj(
+        techData.title + '- ' + dataTitles.IPOTitle,
+        techData.numIPOs,
+        '',
+        false,
+        'column'
+      ));
+      TSData.push(createSeriesObj(
+        otherData.title + '- ' + dataTitles.IPOTitle,
+        otherData.numIPOs,
+        '',
+        false,
+        'column'          
+      ));
+      TSData.push(createSeriesObj(
+        techData.title + '- ' + dataTitles.percProfitTitle,
+        techData.percProfit,
+        '%'
+      ));
+      TSData.push(createSeriesObj(
+        otherData.title + '- ' + dataTitles.percProfitTitle,
+        otherData.percProfit,
+        '%'
+      ));
+
+      var options = getDualAxisOptionsObj(
+        years.data,
+        TSData,
+        dataTitles.IPOTitle + '& ' + dataTitles.percProfitTitle,
+        'Split by ' + techData.title + ' and ' + otherData.title,
+        dataTitles.percProfitTitle,
+        dataTitles.IPOTitle,
+        [years.data.length * 25, 0],
+        '%',
+        ''
+      );
+      return $('#chart').highcharts(options);
+    }
+
+    function createSeriesObj(
+      name,
+      dataArray,
+      valueSuffix = '',
+      isSingleAxis = false,
+      chartType = 'spline'
+    ) {
+      var seriesObj = {
+        name: name,
+        data: dataArray,
+        tooltip: {valueSuffix: valueSuffix}
+      };
+
+      if (!isSingleAxis) {
+        seriesObj.type = chartType;
+        seriesObj.yAxis = 1;
+      }
+
+      return seriesObj;
+    }
+
+    // function handleSelectTimeSeries(event) {
+    //   var TSData = [];
+    //   TSData.push(createSeriesObj(techData.title,techData.numIPOs, '', false));
+    //   TSData.push(createSeriesObj(otherData.title, otherData.numIPOs, '', false));
+    //   var optionsTS = getSingleAxisOptionsObj(
+    //     years.data,
+    //     TSData,
+    //     dataTitles.IPOTitle,
+    //     '',
+    //     dataTitles.IPOTitle
+    //   );
+    //   return $('#chart').highcharts(optionsTS);
+    // }
+
+    function getSingleAxisOptionsObj(
+      xAxisDataArray,
+      seriesDataArray,
+      title,
+      subtitle,
+      y1Title,
+      legendCoordinates = [120, 100],
+      y1LabelSymbol = '',
+      xLabelSymbol = ''
+    ) {
+      return {
+        title: {text: title, x: -20 /*center*/},
+        subtitle: {text: subtitle, x: -20},
+        xAxis: {categories: xAxisDataArray},
+        yAxis: {labels: {format: '{value}' + y1LabelSymbol},
+          title: {text: y1Title}, 
+          plotLines: [{
+            value: 0,
+            width: 1,
+            color: '#808080'
+          },
+        ]},
+        tooltip: {valueSuffix: y1LabelSymbol},
+        legend: {
+          // x: 250,// legendCoordinates[0],
+          verticalAlign: 'right',
+          // y: 25, //legendCoordinates[1],
+          layout: 'vertical',
+          align: 'right',
+          verticalAlign: 'right',
+          borderWidth: 0
+        },
+        series: seriesDataArray,
+      };
+    }
+
+    function getDefaultDualAxisSubtitle() {
+      return 'Split by ' + techData.title + ' and ' + otherData.title;
+    }
+
+    function getDualAxisOptionsObj(
+      xAxisDataArray,
+      seriesDataArray,
+      title,
+      subtitle,
+      y1Title,
+      y2Title,
+      legendCoordinates = [120, 100],
+      y1LabelSymbol = '',
+      y2LabelSymbol = '',
+      xLabelSymbol = ''
+    ) {
+      return {
+        chart: {zoomType: 'xy'},
+        title: {text: title},
+        subtitle: {text: subtitle},
+        xAxis: [{categories: xAxisDataArray, crosshair: true}],
+        yAxis: [{ // Primary yAxis
             labels: {
-                format: '{value}%',
-                style: {color: Highcharts.getOptions().colors[0]}
+                format: '{value}'+y1LabelSymbol,
+                style: {color: Highcharts.getOptions().colors[1]}
             },
             title: {
-                text: dataTitles.percProfitTitle,
-                style: {color: Highcharts.getOptions().colors[0]}
+                text: y1Title,
+                style: {color: Highcharts.getOptions().colors[1]}
             }
         }, { // Secondary yAxis
             title: {
-                text: dataTitles.IPOTitle,
-                style: {color: Highcharts.getOptions().colors[1]}
+                text: y2Title,
+                style: {color: Highcharts.getOptions().colors[0]},
             },
             labels: {
-                style: {color: Highcharts.getOptions().colors[1]}
+                format: '{value}'+y2LabelSymbol,
+                style: {color: Highcharts.getOptions().colors[0]}
             },
             opposite: true
-        }];
-        optionsTS.tooltip = {shared: true},
-        optionsTS.legend = {
+        }],
+        tooltip: {shared: true},
+        legend: {
             layout: 'vertical',
             align: 'left',
-            x: years.data.length * 25,
+            x: legendCoordinates[0],
             verticalAlign: 'top',
-            y: 0,
+            y: legendCoordinates[1],
             floating: true,
             backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
-        };
-        optionsTS.series = [{
-            name: techData.title + '- ' + dataTitles.percProfitTitle,
-            type: 'column',
-            data: techData.percProfit,
-            tooltip: {valueSuffix: '%'}
-        }, {
-            name: otherData.title + '- ' + dataTitles.percProfitTitle,
-            type: 'column',
-            data: otherData.percProfit,
-            tooltip: {valueSuffix: '%'}
         },
-        {
-            name: otherData.title + '- ' + dataTitles.IPOTitle,
-            type: 'spline',
-            yAxis: 1,
-            data: otherData.numIPOs,
-        }, 
-        {
-            name: techData.title + '- ' + dataTitles.IPOTitle,
-            type: 'spline',
-            yAxis: 1,
-            data: techData.numIPOs,
-        }];
-      var chart = $('#chart').highcharts(optionsTS);
-
-    }
-
-    function handleSelectTimeSeries(event) {
-      var optionsTS = Object.assign({}, options);
-      optionsTS.title.text = dataTitles.IPOTitle;
-      optionsTS.xAxis.categories = years.data;
-      optionsTS.yAxis.title.text = dataTitles.IPOTitle;
-      optionsTS.series = [{
-        name: techData.title,
-        data: techData.numIPOs,
-      },
-      {
-        name: otherData.title,
-        data: otherData.numIPOs,
-      }];
-      var chart = $('#chart').highcharts(optionsTS);
-      console.log(chart);
-    };
-
-    if(isAPIAvailable()) {
-        console.log('here');
-        // $('#my-file-selector').bind('change', handleFileSelect);
-      }
-    });
-
-    function isAPIAvailable() {
-      // Check for the various File API support.
-      if (window.File && window.FileReader && window.FileList && window.Blob) {
-        // Great success! All the File APIs are supported.
-        return true;
-      } else {
-        // source: File API availability - http://caniuse.com/#feat=fileapi
-        // source: <output> availability - http://html5doctor.com/the-output-element/
-        document.writeln('The HTML5 APIs used in this form are only available in the following browsers:<br />');
-        // 6.0 File API & 13.0 <output>
-        document.writeln(' - Google Chrome: 13.0 or later<br />');
-        // 3.6 File API & 6.0 <output>
-        document.writeln(' - Mozilla Firefox: 6.0 or later<br />');
-        // 10.0 File API & 10.0 <output>
-        document.writeln(' - Internet Explorer: Not supported (partial support expected in 10.0)<br />');
-        // ? File API & 5.1 <output>
-        document.writeln(' - Safari: Not supported<br />');
-        // ? File API & 9.2 <output>
-        document.writeln(' - Opera: Not supported');
-        return false;
-      }
-    }
-
-    function handleFileSelect(evt) {
-      // console.log('handleFileSelect');
-      // var csv = "file:///C:/Users/phaedrarandolph/IPODataViz/TheInformation_DataStoryteller_02222016-3.csv";
-      // var read = readTextFile(csv);
-      // console.log('read', read);
- 
-      var files = evt.target.files; // FileList object
-      var file = files[0];
-      // console.log('file', file);
-      console.log(evt);
-      console.log('f', evt.target.files);
-      console.log('file', file);
-      
-      var data = null;
-      var reader = new FileReader();
-      reader.readAsText(file);
-      reader.onload = function(event) {
-        var csvData = event.target.result;
-        data = $.csv.toArrays(csvData);
-        console.log('data', data);
-        if (data && data.length > 0) {
-          alert('Imported -' + data.length + '- rows successfully!');
-        } else {
-          alert('No data to import!');
-        }
+        series: seriesDataArray,
       };
-      reader.onerror = function() {
-        alert('Unable to read ' + file.fileName);
-      };
-       
-
-      // var data = $.csv.toObjects(files);
-      // console.log('data', data);
-
-      // read the file metadata
-      var output = ''
-          output += '<span style="font-weight:bold;">' + escape(file.name) + '</span><br />\n';
-          output += ' - FileType: ' + (file.type || 'n/a') + '<br />\n';
-          output += ' - FileSize: ' + file.size + ' bytes<br />\n';
-          output += ' - LastModified: ' + (file.lastModifiedDate ? file.lastModifiedDate.toLocaleDateString() : 'n/a') + '<br />\n';
-
-      // read the file contents
-      // printTable(file);
-
-      // post the results
-      console.log('output', output);
-      return;
     }
-
-    function readTextFile(file) {
-      var rawFile = new XMLHttpRequest();
-      rawFile.open("GET", file, true);
-      rawFile.onreadystatechange = function ()
-      {
-          if(rawFile.readyState === 4)
-          {
-              if(rawFile.status === 200 || rawFile.status == 0)
-              {
-                  var allText = rawFile.responseText;
-                  alert(allText);
-              }
-          }
-      }
-      rawFile.send(null);
-    }
-
-    function printTable(file) {
-      var reader = new FileReader();
-      reader.readAsText(file);
-      reader.onload = function(event){
-        var csv = event.target.result;
-        var data = $.csv.toArrays(csv);
-        var html = '';
-        for(var row in data) {
-          html += '<tr>\r\n';
-          for(var item in data[row]) {
-            html += '<td>' + data[row][item] + '</td>\r\n';
-          }
-          html += '</tr>\r\n';
-        }
-        $('#contents').html(html);
-      };
-      reader.onerror = function(){ alert('Unable to read ' + file.fileName); };
-    }
+});
+    
