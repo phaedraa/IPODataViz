@@ -42,8 +42,8 @@
 
     <div class="jumbotron">
       <div class="container">
-        <h1>IPO Data - Tech Vs. Other</h1>
-        <p>This contains IPO and profitability data on the tech industry... compares to other industries... write more text here.
+        <h1>Comparing IPO Data in Tech Industry to all Others</h1>
+        <p>This contains data related to number of IPOs, split by the Tech & Biotech Industries and all others, and their respective profitability.
         </p>
       </div>
     </div>
@@ -52,37 +52,40 @@
       <div class="row">
         <div class="col-md-4">
           <h2>Moving Averages</h2>
-          <p>Insert some text here to describe what is going on. lskfdjlskfjdlskdjflsdfjlsdkfjlskdflskdfjslkdfjlsdkfjlsdkf</p>
+          <p>Moving averages of number of IPOs and number profitable</p>
           <p><a class="btn btn-default" href="#" role="button" id="view_details_1">View Data &raquo;</a></p>
         </div>
         <div class="col-md-4">
           <h2>Total IPOs & % Profitable</h2>
-          <p>Insert some text here to describe what is going on. lskfdjlskfjdlskdjflsdfjlsdkfjlskdflskdfjslkdfjlsdkfjlsdkf</p>
+          <p>Total IPOs by industry and the percentage profitable within each sector.</p>
           <p><a class="btn btn-default" href="#" role="button" id="view_details_2">View Data &raquo;</a></p>
        </div>
         <div class="col-md-4">
           <h2>Year Over Year Growth</h2>
-          <p>Insert some text here to describe what is going on. lskfdjlskfjdlskdjflsdfjlsdkfjlskdflskdfjslkdfjlsdkfjlsdkf</p>
+          <p>Year over year percent changes for number of IPOs and number profitable.</p>
           <p><a class="btn btn-default" href="#" role="button" id="view_details_3">View Data &raquo;</a></p>
         </div>
         <div class="col-md-4">
           <h2>Likelihood of IPO Profitability</h2>
-          <p>Insert some text here to describe what is going on. lskfdjlskfjdlskdjflsdfjlsdkfjlskdflskdfjslkdfjlsdkfjlsdkf</p>
+          <p>Regression analysis demonstrating the likelihood of profitability given number of IPOs</p>
           <p><a class="btn btn-default" href="#" role="button" id="view_details_4">View Data &raquo;</a></p>
         </div>
         <div class="col-md-4">
           <h2>IPO Data over the Decades</h2>
-          <p>Insert some text here to describe what is going on. lskfdjlskfjdlskdjflsdfjlsdkfjlskdflskdfjslkdfjlsdkfjlsdkf</p>
+          <p>How IPO Data transforms when grouped into decades</p>
           <p><a class="btn btn-default" href="#" role="button" id="view_details_5">View Data &raquo;</a></p>
         </div>
         <div class="col-md-4">
           <h2>Historical Summarizations</h2>
-          <p>Insert some text here to describe what is going on. lskfdjlskfjdlskdjflsdfjlsdkfjlskdflskdfjslkdfjlsdkfjlsdkf</p>
+          <p>Total comparisons and summarizations from 1980 - 2014</p>
           <p><a class="btn btn-default" href="#" role="button" id="view_details_6">View Data &raquo;</a></p>
         </div>
       </div>
       <div class="row">
         <div id="chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+      </div>
+      <div class="row">
+        <div id="chart_2" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
       </div>
       <hr>
       <footer>
@@ -109,6 +112,14 @@
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <!--<script src="//rawgithub.com/phpepe/highcharts-regression/master/highcharts-regression.js"> </script>-->
     <script src="Highcharts-4.2.5/highcharts-regression/highcharts-regression.js"> </script>
+    <script src="lodash.min.js"></script>
+    <script src="yoyHelper.js"></script>
+    <script src="decadeHelper.js"></script>
+    <script src="historicalHelper.js"></script>
+    <script src="dualAxisTimeSeriesHelper.js"></script>
+    <script src="regressionHelper.js"></script>
+    <script src="movingAverageHelper.js"></script>
+    <script src="dataHelper.js"></script>
     <script src="index.js"></script>
   </body>
 </html>
