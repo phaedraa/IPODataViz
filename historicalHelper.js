@@ -37,7 +37,6 @@ function handleSelectHistoricalSummaries () {
   	return sum;
   }
 
-
   function getSwitchedKey(key) {
     return MAP[key] || key;
   }
@@ -46,7 +45,8 @@ function handleSelectHistoricalSummaries () {
   	return {
       chart: {
         type: 'pie',
-        options3d: { enabled: true, alpha: 45, beta: 0 } },
+        options3d: { enabled: true, alpha: 45, beta: 0 } 
+      },
       title: { text: title },
       tooltip: { pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>' },
       plotOptions: {
@@ -57,11 +57,7 @@ function handleSelectHistoricalSummaries () {
           dataLabels: { enabled: true, format: '{point.name}' }
         }
       },
-      series: [{
-        type: 'pie',
-        name: 'Browser share',
-        data: seriesData,
-      }]
+      series: [{ type: 'pie', name: 'Browser share', data: seriesData }]
     }
   }
 }

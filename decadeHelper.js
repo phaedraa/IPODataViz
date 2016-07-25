@@ -1,62 +1,46 @@
 function handleSelectDecadeDualAxisTimeSeries(event) {
-  var MAP = {
-    techPercProfits: 'techNumProfit',
-    otherPercProfits: 'otherNumProfit'
-  };
   var decadeData = getDecadeData();
   var TSData = [];
   _.keys(decadeData).forEach(function(key) {
     TSData.push(createSeriesObj(
-      TITLES.legend[getSwitchedKey(key)],
+      TITLES.legend[key],
       decadeData[key],
       '',
       false,
       'column'
     ));
   });
+  console.log(TSData);
 
-  var options = getDualAxisOptionsObj(
+  var options = getMultiColumnOptionsObj(
     getYearsData(IPODATA.years),
     TSData,
     'IPOs Throughout the Decades (' + getTimeRangeStr() + ')',
     getDefaultDualAxisSubtitle(),
-    TITLES.numProft,
-    TITLES.IPO,
-    [IPODATA.years.length * 25, 0],
-  	'',
-  	'',
-  	'',
-  	null,
-  	null,
-  	'category'
+    'Num IPOs',
+    TITLES.years,
+    TITLES.IPO
   );
 
   return $('#chart').highcharts(options);
 
   function getDecadeData() {
-    var decadeDataObj = getNewDataObj();
-    var decadeDatum = getNewDataObj();
-    // decadeDataObj.years = [];
-    // decadeDatum.years = [];
+    var decadeDataObj = getNewDataObj(false);
+    var decadeDatum = getNewDataObj(false);
     var len = IPODATA.years.length;
-    
+    console.log(decadeDataObj);
     for (var i = 0; i < len; i++) {
       _.keys(decadeDataObj).forEach(function(key) {
-      	var mappedKey = getSwitchedKey(key);
       	if (isDecade(i + 1, len)) {
       	  decadeDataObj[key].push(getDecadeAvg(decadeDatum[key]));
       	  decadeDatum[key] = [];
       	} else {
-      	  decadeDatum[key].push(IPODATA[mappedKey][i]);
+      	  decadeDatum[key].push(IPODATA[key][i]);
       	}
       });
     }
 
     return decadeDataObj;
-  }
-
-  function getSwitchedKey(key) {
-    return MAP[key] || key;
   }
 
   function isDecade(idx, max) {
@@ -77,22 +61,50 @@ function handleSelectDecadeDualAxisTimeSeries(event) {
   }
 
   function getYearsData(years) {
-  	var decade = [];
-  	return years.map(function(year, i) {
- 	  if (isDecade(i + 1, years.length)) {
- 	  	decade.push(year);
- 	  	var decadeStr = getDecadeRangeStr(decade);
- 	  	console.log(decadeStr);
- 	  	decade = [];
- 	  	return decadeStr;
- 	  } else {
- 	  	decade.push(year);
- 	  }
+  	var decadeTemp = [];
+    var decadeRanges = [];
+  	years.forEach(function(year, i) {
+ 	    if (isDecade(i + 1, years.length)) {
+ 	    	decadeTemp.push(year);
+ 	    	decadeRanges.push(getDecadeRangeStr(decadeTemp));
+        decadeTemp = [];
+ 	    } else {
+ 	    	decadeTemp.push(year);
+ 	    }
   	});
 
+    return decadeRanges;
+
   	function getDecadeRangeStr(decade) {
-  	  console.log(decade);
-  	  return parseInt(decade[0]); // + ' - ' + decade[decade.length - 1];
+  	  return parseInt(decade[0]) + ' - ' + decade[decade.length - 1];
   	}
+  }
+
+  function getMultiColumnOptionsObj(
+    xAxisData,
+    seriesData,
+    title,
+    subtitle,
+    yTitle,
+    xTitle
+  ) {
+    return { 
+      chart: { type: 'column' },
+      title: { text: title },
+      subtitle: { text: subtitle },
+      xAxis: { categories: xAxisData, crosshair: true, title: { text: xTitle }},
+      yAxis: { min: 0, title: { text: yTitle } },
+      tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color};' +
+          'padding:0">{series.name}: </td>' +
+          '<td style="padding:0"><b>{point.y:1f}</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+      },
+      plotOptions: { column: { pointPadding: 0.2, borderWidth: 0 } },
+      series: seriesData
+    };
   }
 }

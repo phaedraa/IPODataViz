@@ -1,13 +1,9 @@
 function handleSelectYoYSinglelAxisTimeSeries(event) {
-  var MAP = {
-      techPercProfits: 'techNumProfit',
-      otherPercProfits: 'otherNumProfit'
-    };
   var YoYData = getYoYPercChangesData();
   var TSData = [];
   _.keys(YoYData).forEach(function(key) {
     TSData.push(createSeriesObj(
-      TITLES.legend[getSwitchedKey(key)],
+      TITLES.legend[key],
       YoYData[key],
       '%',
       true
@@ -30,21 +26,16 @@ function handleSelectYoYSinglelAxisTimeSeries(event) {
   }
 
   function getYoYPercChangesData() {
-    var YoYChangesDataObj = getNewDataObj();
+    var YoYChangesDataObj = getNewDataObj(false);
     for (var j = 0; j < IPODATA.years.length - 1; j++) {
       _.keys(YoYChangesDataObj).forEach(function(key) {
-        var mappedKey = getSwitchedKey(key);
         YoYChangesDataObj[key].push(
-          getPercDiff(IPODATA[mappedKey][j], IPODATA[mappedKey][j+1])
+          getPercDiff(IPODATA[key][j], IPODATA[key][j+1])
         );
       });
     }
 
     return YoYChangesDataObj;
-  }
-
-  function getSwitchedKey(key) {
-    return MAP[key] || key;
   }
 
   function getSingleAxisOptionsObj(
@@ -64,13 +55,11 @@ function handleSelectYoYSinglelAxisTimeSeries(event) {
       yAxis: {
         labels: { format: '{value}' + y1LabelSymbol },
         title: { text: y1Title },
-        plotLines: [
-          {
-            value: 0,
-            width: 1,
-            color: '#808080'
-          },
-        ]
+        plotLines: [{
+          value: 0,
+          width: 1,
+          color: '#808080'
+        }]
       },
       tooltip: { valueSuffix: y1LabelSymbol },
       legend: {

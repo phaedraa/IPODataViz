@@ -1,10 +1,23 @@
 function handleSelectRegressionTimeSeries() {
-  var techSeriesData = create2DDataArray(IPODATA.techIPOs, IPODATA.techNumProfit);
-  var otherSeriesData = create2DDataArray(IPODATA.otherIPOs, IPODATA.otherNumProfit);
+  var techSeriesData = create2DDataArray(
+    IPODATA.techIPOs,
+    IPODATA.techNumProfit
+  );
+  var otherSeriesData = create2DDataArray(
+    IPODATA.otherIPOs,
+    IPODATA.otherNumProfit
+  );
 
-  $('#chart').highcharts(getOptionObj(techSeriesData, 'tech'));
-  $('#chart_2').highcharts(getOptionObj(otherSeriesData, 'other'));
+  return renderTechAndOtherRegressionCharts(techSeriesData, otherSeriesData);
 
+  function renderTechAndOtherRegressionCharts(techSeriesData, otherSeriesData) {
+    $('#chart').empty();
+    $('#chart').append('<div id="chart_1"></div>');
+    $('#chart').append('<div id="chart_2"></div>');
+    $('#chart_1').highcharts(getOptionObj(techSeriesData, 'tech'));
+    $('#chart_2').highcharts(getOptionObj(otherSeriesData, 'other'));
+  }
+  
   function getOptionObj(seriesData, type) {
     return getRegressionOptionsObj(
       seriesData,
@@ -58,9 +71,7 @@ function handleSelectRegressionTimeSeries() {
         scatter: {
           marker: {
             radius: 5,
-            states: {
-                hover: { enabled: true, lineColor: 'rgb(100,100,100)' }
-            }
+            states: { hover: { enabled: true, lineColor: 'rgb(100,100,100)' } }
           },
           states: { hover: { marker: { enabled: false } } },
           tooltip: {
