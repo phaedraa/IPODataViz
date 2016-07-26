@@ -5,7 +5,7 @@ var TITLES = {
   other: '',
   years: '',
   numProfit: '',
-  legend: {}
+  legend: new Object()
 };
 var IPODATA = getNewDataObj();
 
@@ -84,4 +84,13 @@ function getNewDataObj(profitTypeIsPercent = true) {
   function getSwitchedKey(key, profitTypeIsPercent) {
     return !profitTypeIsPercent ? MAP[key] : key;
   }
+}
+
+function totalArray(data) {
+  var sum = 0;
+  var l = data.length;
+  for (var i = 0; i < l; i++) {
+    sum += data[i];
+  }
+  return sum;
 }

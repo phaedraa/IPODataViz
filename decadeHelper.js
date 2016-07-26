@@ -1,20 +1,7 @@
 function handleSelectDecadeDualAxisTimeSeries(event) {
-  var decadeData = getDecadeData();
-  var TSData = [];
-  _.keys(decadeData).forEach(function(key) {
-    TSData.push(createSeriesObj(
-      TITLES.legend[key],
-      decadeData[key],
-      '',
-      false,
-      'column'
-    ));
-  });
-  console.log(TSData);
-
   var options = getMultiColumnOptionsObj(
     getYearsData(IPODATA.years),
-    TSData,
+    getSeriesData(),
     'IPOs Throughout the Decades (' + getTimeRangeStr() + ')',
     getDefaultDualAxisSubtitle(),
     'Num IPOs',
@@ -24,11 +11,33 @@ function handleSelectDecadeDualAxisTimeSeries(event) {
 
   return $('#chart').highcharts(options);
 
+  function getSeriesData() {
+    var decadeData = getDecadeData();
+    var TSData = [];
+    // Not ideal, but fastest solution ATM to enable ordered display in graph
+    var orderedKeys = [
+      'techIPOs', 
+      'techNumProfit', 
+      'otherIPOs', 
+      'otherNumProfit'
+    ];
+    orderedKeys.forEach(function(key) {
+      TSData.push(createSeriesObj(
+        TITLES.legend[key],
+        decadeData[key],
+        '',
+        false,
+        'column'
+      ));
+    });
+
+    return TSData;
+  }
+
   function getDecadeData() {
     var decadeDataObj = getNewDataObj(false);
     var decadeDatum = getNewDataObj(false);
     var len = IPODATA.years.length;
-    console.log(decadeDataObj);
     for (var i = 0; i < len; i++) {
       _.keys(decadeDataObj).forEach(function(key) {
       	if (isDecade(i + 1, len)) {
@@ -51,14 +60,6 @@ function handleSelectDecadeDualAxisTimeSeries(event) {
     return Math.floor(100 * totalArray(decade) / totalArray.length) / 100.0;
   }
 
-  function totalArray(data) {
-  	var sum = 0;
-  	var l = data.length;
-    for (var i = 0; i < l; i++) {
-      sum += data[i];
-    }
-  	return sum;
-  }
 
   function getYearsData(years) {
   	var decadeTemp = [];

@@ -1,6 +1,21 @@
 function handleSelectDualAxisTimeSeries(event) {
-  var TSData = [];
-  _.keys(IPODATA).forEach(function(key) {
+  var options = getDualAxisOptionsObj(
+    IPODATA.years,
+    getSeriesData(),
+    TITLES.IPO + ' & ' + TITLES.percProfit,
+    getDefaultDualAxisSubtitle(),
+    TITLES.IPO,
+    TITLES.percProfit,
+    [IPODATA.years.length / 2, 20],
+    '',
+    '%'
+  );
+  
+  return $('#chart').highcharts(options);
+
+  function getSeriesData() {
+    var TSData = [];
+    _.keys(IPODATA).forEach(function(key) {
       switch(key) {
         case 'techPercProfits':
         case 'otherPercProfits':
@@ -24,22 +39,7 @@ function handleSelectDualAxisTimeSeries(event) {
           ));
           break;
       }
-  });
-  
-  var options = getDualAxisOptionsObj(
-    IPODATA.years,
-    TSData,
-    TITLES.IPO + '& ' + TITLES.percProfit,
-    getDefaultDualAxisSubtitle(),
-    TITLES.IPO,
-    TITLES.percProfit,
-    [IPODATA.years.length * 25, 0],
-    '',
-    '%',
-    '',
-    400,
-    100
-  );
-  
-  return $('#chart').highcharts(options);
+    });
+    return TSData;
+  }
 }

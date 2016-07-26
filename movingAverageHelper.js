@@ -2,24 +2,18 @@ function handleSelectMovingAvgDualAxisTimeSeries(event) {
   var mvgAvgData = getMovingAvgData();
   var TSData = [];
   _.keys(mvgAvgData).forEach(function(key) {
-    var symbol = key === 'techPercProfits' || 'otherPercProfits' ? '%' : '';
     TSData.push(createSeriesObj(
       TITLES.legend[key],
-      mvgAvgData[key],
-      symbol
+      mvgAvgData[key]
     ));
   });
 
-  var options = getDualAxisOptionsObj(
+  var options = getSingleAxisOptionsObj(
     IPODATA.years,
     TSData,
-    'Moving Averages of ' + TITLES.IPO + ' & ' + TITLES.percProfit,
+    'Moving Averages of ' + TITLES.IPO + ' & ' + TITLES.numProfit,
      getDefaultDualAxisSubtitle(),
-    TITLES.percProfit + ' Moving Avg',
-    TITLES.IPO + ' Moving Avg',
-    [IPODATA.years.length * 25, 0],
-    '%',
-    ''
+    TITLES.IPO
   );
 
   return $('#chart').highcharts(options);
@@ -35,7 +29,7 @@ function handleSelectMovingAvgDualAxisTimeSeries(event) {
   }
 
   function getMovingAvgData() {
-    var MovingAvgDataObj = getNewDataObj();
+    var MovingAvgDataObj = getNewDataObj(false);
     for (var j=0; j<IPODATA.years.length; j++) {
       _.keys(MovingAvgDataObj).forEach(function(key) {
         MovingAvgDataObj[key].push(
