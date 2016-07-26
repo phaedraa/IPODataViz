@@ -28,5 +28,4 @@ app.get('TheInformation_DataStoryteller_02222016-3.csv', function (req, res, nex
       console.log('Sent:', 'TheInformation_DataStoryteller_02222016-3.csv');
     }
   });
-
 });

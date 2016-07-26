@@ -45,7 +45,6 @@ function getDualAxisOptionsObj(
         text: y1Title,
         style: { color: Highcharts.getOptions().colors[1] }
       },
-      max: y1Max,
     }, { // Secondary yAxis
       title: {
         text: y2Title, 
@@ -56,7 +55,6 @@ function getDualAxisOptionsObj(
         style: { color: Highcharts.getOptions().colors[0] }
       },
       opposite: true,
-      max: y2Max,
     }],
     tooltip: { shared: true },
     legend: {
