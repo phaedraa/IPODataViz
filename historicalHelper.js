@@ -29,6 +29,7 @@ function handleSelectHistoricalSummaries () {
           type: 'pie',
           options3d: { enabled: true, alpha: 45, beta: 0 } 
         },
+        colors: ['#407c99','#6ccfff','#7e1d1d','#fc3b3a'],
         title: { text: title },
         tooltip: { 
           pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'

@@ -2,11 +2,11 @@ $(document).ready(function() {
   assignListeners();
 
   function assignListeners() {
-    $('#view_details_1').bind('click', handleSelectMovingAvgDualAxisTimeSeries);
+    $('#view_details_1').bind('click', handleSelectMovingAvgTimeSeries);
     $('#view_details_2').bind('click', handleSelectDualAxisTimeSeries);
-    $('#view_details_3').bind('click', handleSelectYoYSinglelAxisTimeSeries);
-    $('#view_details_4').bind('click', handleSelectRegressionTimeSeries);
-    $('#view_details_5').bind('click', handleSelectDecadeDualAxisTimeSeries);
+    $('#view_details_3').bind('click', handleSelectYoYGrowthTimeSeries);
+    $('#view_details_4').bind('click', handleSelectRegressionWithScatterPlot);
+    $('#view_details_5').bind('click', handleSelectDecadeBarGraph);
     $('#view_details_6').bind('click', handleSelectHistoricalSummaries);
   }
 });

@@ -1,4 +1,4 @@
-function handleSelectYoYSinglelAxisTimeSeries(event) {
+function handleSelectYoYGrowthTimeSeries(event) {
   return $('#chart').highcharts(getOptionsData());
 
   function getOptionsData() {

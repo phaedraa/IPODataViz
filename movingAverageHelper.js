@@ -1,4 +1,4 @@
-function handleSelectMovingAvgDualAxisTimeSeries(event) {
+function handleSelectMovingAvgTimeSeries(event) {
   return $('#chart').highcharts(getOptionsData());
 
   function getOptionsData() {

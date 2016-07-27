@@ -1,4 +1,4 @@
-function handleSelectDecadeDualAxisTimeSeries(event) {
+function handleSelectDecadeBarGraph(event) {
   return $('#chart').highcharts(getOptionsData());
 
   function getOptionsData() {
@@ -89,6 +89,7 @@ function handleSelectDecadeDualAxisTimeSeries(event) {
     ) {
       return { 
         chart: { type: 'column' },
+        colors: ['#407c99','#6ccfff','#7e1d1d','#fc3b3a'],
         title: { text: title },
         subtitle: { text: subtitle },
         xAxis: { categories: xAxisData, crosshair: true, title: { text: xTitle }},
