@@ -3,6 +3,12 @@ function handleSelectDecadeBarGraph(event) {
 
   function getOptionsData() {
     var decadeData = getDecadeData();
+    var pasedData = require('./dataHelper.js');
+    var getTimeRangeStr = require('./getTimeRangeStr.js');
+    var TITLES = parsedData.TITLES;
+    var IPODATA = parsedData.IPODATA;
+    var getDefaultDualAxisSubtitle = require('./getDefaultDualAxisSubtitle.js');
+
     return getMultiColumnOptionsObj(
       decadeData.years,
       getSeriesData(decadeData),
@@ -22,6 +28,8 @@ function handleSelectDecadeBarGraph(event) {
         'otherIPOs', 
         'otherNumProfit'
       ];
+      var createSeriesObj = require('./createSeriesObj.js');
+
       orderedKeys.forEach(function(key) {
         TSData.push(createSeriesObj(
           TITLES.legend[key],
@@ -54,6 +62,7 @@ function handleSelectDecadeBarGraph(event) {
       return decadeDataObj;
   
       function getNewDataObjWithYears(profitTypeIsPercent = false) {
+        var getNewDataObj = require('./getNewDataObj.js');
         var dataObj = getNewDataObj(profitTypeIsPercent);
         dataObj['years'] = [];
         return dataObj;
@@ -75,6 +84,7 @@ function handleSelectDecadeBarGraph(event) {
       }
   
       function getDecadeAvg(decade) {
+        var totalArray = require('./totalArray.js');
         return Math.floor(100 * totalArray(decade) / totalArray.length) / 100.0;
       }
     }
@@ -109,3 +119,6 @@ function handleSelectDecadeBarGraph(event) {
     }
   }
 }
+
+module.exports = handleSelectDecadeBarGraph;
+

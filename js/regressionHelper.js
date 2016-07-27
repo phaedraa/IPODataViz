@@ -1,4 +1,7 @@
 function handleSelectRegressionWithScatterPlot() {
+  var parsedData = require('./dataHelper.js');
+  var TITLES = parsedData.TITLES;
+  var IPODATA = parsedData.IPODATA;
   var techSeriesData = create2DDataArray(
     IPODATA.techIPOs,
     IPODATA.techNumProfit
@@ -15,7 +18,6 @@ function handleSelectRegressionWithScatterPlot() {
     var color = getPointColorRGB(isTech);
     var dataArray = [];
     for (var k = 0; k < xData.length; k++) {
-      // dataArray.push([xData[k], yData[k]]);
       dataArray.push({
         x: xData[k],
         y: yData[k],
@@ -37,16 +39,69 @@ function handleSelectRegressionWithScatterPlot() {
     $('#chart_2').highcharts(getOptionsData(otherSeriesData, false));
 
     function getOptionsData(seriesData, isTech = true) {
-      var type = getKeyFromType(isTech);
-      return getRegressionOptionsObj(
-        seriesData,
-        TITLES[getKeyFromType(isTech)] + ': ' + TITLES.IPO + ' VS. ' + 'Number Profitable by Year',
-        getTimeRangeStr(),
-        TITLES.IPO,
-        TITLES.numProft,
-        'polynomial', //,
-        getLineColorRGB(isTech)
-      );
+      var title = TITLES[getKeyFromType(isTech)] + ': ' + TITLES.IPO + ' VS. ' + 'Number Profitable by Year';
+      var subtitle = require('./getTimeRangeStr.js')();
+      var xTitle = TITLES.IPO;
+      var yTitle = TITLES.numProft;
+      var regressionType = 'polynomial';
+      var legendCoordinates = [IPODATA.years.length / 2, 15];
+      var color = getLineColorRGB(isTech);
+      
+      return {
+        chart: { type: 'scatter', zoomType: 'xy' },
+        // colors: color, // ,'#6ccfff','#7e1d1d','#fc3b3a'],
+        title: { 
+          text: title , 
+          style: { color: color, font: 'bold 16px "Trebuchet MS", Verdana, sans-serif'
+          }
+         },
+        subtitle: { text: subtitle },
+        xAxis: {
+          title: { enabled: true, text: xTitle },
+          startOnTick: true,
+          endOnTick: true,
+          showLastLabel: true
+        },
+        yAxis: { title: { text: yTitle } },
+        legend: {
+          layout: 'vertical',
+          align: 'left',
+          verticalAlign: 'top',
+          x: legendCoordinates[0],
+          y: legendCoordinates[1],
+          floating: true,
+          backgroundColor: '#FFFFFF',
+          borderWidth: 1
+        },
+        plotOptions: {
+          scatter: {
+            marker: {
+              radius: 5,
+              states: { 
+                hover: {
+                  enabled: true, 
+                  lineColor: color,
+                }, 
+              },
+            },
+            states: { hover: { marker: { enabled: false } } },
+            tooltip: {
+              headerFormat: '<b>{series.name}</b><br>',
+              pointFormat: '{point.x}, {point.y}'
+            },
+          },
+        },
+        series: [{
+          regression: true,
+          regressionSettings: {
+            type: regressionType,
+            color: color,
+          },
+          name: TITLES.years,
+          color: color,
+          data: seriesData,
+        }]
+      };
 
       function getLineColorRGB(isTech) {
         // 'rgb(64, 124, 153)'
@@ -56,73 +111,8 @@ function handleSelectRegressionWithScatterPlot() {
       function getKeyFromType(isTech) {
         return isTech ? 'tech' : 'other';
       }
-
-      function getRegressionOptionsObj(
-        seriesDataArray,
-        title,
-        subtitle,
-        xTitle,
-        yTitle,
-        regressionType = 'linear',
-        legendCoordinates = [120, 100],
-        color //= 'rgb(126, 29, 29)'
-      ) {
-        return {
-          chart: { type: 'scatter', zoomType: 'xy' },
-          // colors: color, // ,'#6ccfff','#7e1d1d','#fc3b3a'],
-          title: { 
-            text: title , 
-            style: { color: color, font: 'bold 16px "Trebuchet MS", Verdana, sans-serif'
-            }
-           },
-          subtitle: { text: subtitle },
-          xAxis: {
-            title: { enabled: true, text: xTitle },
-            startOnTick: true,
-            endOnTick: true,
-            showLastLabel: true
-          },
-          yAxis: { title: { text: yTitle } },
-          legend: {
-            layout: 'vertical',
-            align: 'left',
-            verticalAlign: 'top',
-            x: 100,
-            y: 70,
-            floating: true,
-            backgroundColor: '#FFFFFF',
-            borderWidth: 1
-          },
-          plotOptions: {
-            scatter: {
-              marker: {
-                radius: 5,
-                states: { 
-                  hover: {
-                    enabled: true, 
-                    lineColor: color,
-                  }, 
-                },
-              },
-              states: { hover: { marker: { enabled: false } } },
-              tooltip: {
-                headerFormat: '<b>{series.name}</b><br>',
-                pointFormat: '{point.x}, {point.y}'
-              },
-            },
-          },
-          series: [{
-            regression: true,
-            regressionSettings: {
-              type: regressionType,
-              color: color,
-            },
-            name: TITLES.years,
-            color: color,
-            data: seriesDataArray,
-          }]
-        };
-      }
     }
   }
 }
+
+module.exports = handleSelectRegressionWithScatterPlot;

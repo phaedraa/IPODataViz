@@ -2,6 +2,11 @@ function handleSelectYoYGrowthTimeSeries(event) {
   return $('#chart').highcharts(getOptionsData());
 
   function getOptionsData() {
+    var parsedData = require('./dataHelper.js');
+    var TITLES = parsedData.TITLES;
+    var IPODATA = parsedData.IPODATA;
+    var getSingleAxisOptionsObj = require('./getSingleAxisOptionsObj.js');
+
     return getSingleAxisOptionsObj(
       IPODATA.years.slice(1),
       getSeriesData(),
@@ -15,6 +20,8 @@ function handleSelectYoYGrowthTimeSeries(event) {
     function getSeriesData() {
       var YoYData = getYoYPercChangesData();
       var TSData = [];
+      var createSeriesObj = require('./createSeriesObj.js');
+
       _.keys(YoYData).forEach(function(key) {
         TSData.push(createSeriesObj(
           TITLES.legend[key],
@@ -27,7 +34,9 @@ function handleSelectYoYGrowthTimeSeries(event) {
       return TSData;
 
       function getYoYPercChangesData() {
+        var getNewDataObj = require('./getNewDataObj.js');
         var YoYChangesDataObj = getNewDataObj(false);
+
         for (var j = 0; j < IPODATA.years.length - 1; j++) {
           _.keys(YoYChangesDataObj).forEach(function(key) {
             YoYChangesDataObj[key].push(
@@ -45,3 +54,5 @@ function handleSelectYoYGrowthTimeSeries(event) {
     }
   }
 }
+
+module.exports = handleSelectYoYGrowthTimeSeries;

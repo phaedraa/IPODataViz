@@ -2,6 +2,12 @@ function handleSelectMovingAvgTimeSeries(event) {
   return $('#chart').highcharts(getOptionsData());
 
   function getOptionsData() {
+    var parsedData = require('./dataHelper.js');
+    var TITLES = parsedData.TITLES;
+    var IPODATA = parsedData.IPODATA;
+    var getSingleAxisOptionsObj = require('./getSingleAxisOptionsObj.js');
+    ver getDefaultDualAxisSubtitle = require('./getDefaultDualAxisSubtitle.js');
+
     return getSingleAxisOptionsObj(
       IPODATA.years,
       getSeriesData(),
@@ -47,3 +53,6 @@ function handleSelectMovingAvgTimeSeries(event) {
     }
   }  
 }
+
+module.exports = handleSelectMovingAvgTimeSeries;
+

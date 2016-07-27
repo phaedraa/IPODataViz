@@ -3,16 +3,25 @@ function handleSelectHistoricalSummaries () {
 
   function getOptionsData() {
     var totalsData = getTotalsData();
+    var getTimeRangeStr = require('./getTimeRangeStr.js');
+
     return getPieChartOptionsObj(
       'Number IPOs & Profitability by Sector ' + getTimeRangeStr(),
       totalsData
     );
 
     function getTotalsData() {
-      var totals = {};
+      var getNewDataObj = require('./getNewDataObj.js');
+      var parsedData = require('./dataHelper.js');
+      var TITLES = parsedData.TITLES;
+      var IPODATA = parsedData.IPODATA;
+      var totalArray = require('./totalArray.js');
+      var totals = new Object();
+
       _.keys(getNewDataObj(false)).forEach(function(key) {
         totals[key] = totalArray(IPODATA[key]);
       });
+
       return [
         [TITLES.tech + '- Not Profitable',
           totals.techIPOs - totals.techNumProfit],
@@ -47,3 +56,5 @@ function handleSelectHistoricalSummaries () {
     }
   }
 }
+
+module.exports = handleSelectHistoricalSummaries;
