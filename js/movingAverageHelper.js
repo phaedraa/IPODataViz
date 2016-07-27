@@ -6,7 +6,7 @@ function handleSelectMovingAvgTimeSeries(event) {
     var TITLES = parsedData.TITLES;
     var IPODATA = parsedData.IPODATA;
     var getSingleAxisOptionsObj = require('./getSingleAxisOptionsObj.js');
-    ver getDefaultDualAxisSubtitle = require('./getDefaultDualAxisSubtitle.js');
+    var getDefaultDualAxisSubtitle = require('./getDefaultDualAxisSubtitle.js');
 
     return getSingleAxisOptionsObj(
       IPODATA.years,
