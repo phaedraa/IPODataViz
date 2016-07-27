@@ -7,9 +7,12 @@ var TITLES = {
   numProfit: '',
   legend: new Object()
 };
+
+var getNewDataObj = requre('./getNewDataObj.js');
 var IPODATA = getNewDataObj();
 
 parseData();
+module.exports = { IPODATA: IPODATA, TITLES: TITLES };
 
 function parseData() {
   Papa.parse('/TheInformation_DataStoryteller_02222016-3.csv', {
@@ -66,31 +69,4 @@ function parseData() {
       }
     }
   }
-}
-
-function getNewDataObj(profitTypeIsPercent = true) {
-  var MAP = {
-    techPercProfits: 'techNumProfit',
-    otherPercProfits: 'otherNumProfit'
-  };
-  var dataObj = { techIPOs: [], otherIPOs: [] };
-  _.keys(MAP).forEach(function(key) {
-    key = getSwitchedKey(key, profitTypeIsPercent);
-    dataObj[key] = [];
-  });
-
-  return dataObj;
-
-  function getSwitchedKey(key, profitTypeIsPercent) {
-    return !profitTypeIsPercent ? MAP[key] : key;
-  }
-}
-
-function totalArray(data) {
-  var sum = 0;
-  var l = data.length;
-  for (var i = 0; i < l; i++) {
-    sum += data[i];
-  }
-  return sum;
 }
