@@ -63,7 +63,7 @@ function handleSelectDecadeDualAxisTimeSeries(event) {
       }
 
       function isDecade(idx, max) {
-        return idx % 10 === 0 || idx === max - 1;
+        return idx % 10 === 0 || idx === max;
       }
 
       function getDecadeXorYValue(key, decadeData) {
