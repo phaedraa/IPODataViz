@@ -48,7 +48,7 @@ function handleSelectYoYGrowthTimeSeries(event) {
         return YoYChangesDataObj;
     
         function getPercDiff(val1, val2) {
-          return Math.round(100.0 * (val2 - val1) / val1) / 100.0;
+          return 100* Math.round(100.0 * (val2 - val1) / val1) / 100.0;
         }
       }
     }
