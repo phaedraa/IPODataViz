@@ -1,3 +1,11 @@
 .logo {
   background: white;
+  fill: white;
 }
+
+.navbar-custom {
+    color: #FFFFFF;
+    background-color: #FFFFFF;
+}
+
+
