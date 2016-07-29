@@ -47,3 +47,5 @@ function getDualAxisOptionsObj(
     series: seriesData,
   };
 }
+
+module.exports = getDualAxisOptionsObj;

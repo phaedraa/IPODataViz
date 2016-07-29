@@ -45,3 +45,5 @@ function handleSelectDualAxisTimeSeries(event) {
     }
   }
 }
+
+module.exports = handleSelectDualAxisTimeSeries;

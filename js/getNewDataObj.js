@@ -15,3 +15,5 @@ function getNewDataObj(profitTypeIsPercent = true) {
     return !profitTypeIsPercent ? MAP[key] : key;
   }
 }
+
+module.exports = getNewDataObj;

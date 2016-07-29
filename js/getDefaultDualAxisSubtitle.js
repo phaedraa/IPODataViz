@@ -3,3 +3,5 @@ function getDefaultDualAxisSubtitle() {
   var TITLES = parsedData.TITLES;
   return 'Split by ' + TITLES.tech + ' and ' + TITLES.other;
 }
+
+module.exports = getDefaultDualAxisSubtitle;

@@ -21,3 +21,5 @@ function createSeriesObj(
 
   return seriesObj;
 }
+
+module.exports = createSeriesObj;

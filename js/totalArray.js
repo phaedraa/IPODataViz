@@ -6,3 +6,5 @@ function totalArray(data) {
   }
   return sum;
 }
+
+module.exports = totalArray;

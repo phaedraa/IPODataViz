@@ -30,3 +30,5 @@ function getSingleAxisOptionsObj(
     series: seriesDataArray,
   };
 }
+
+module.exports = getSingleAxisOptionsObj;

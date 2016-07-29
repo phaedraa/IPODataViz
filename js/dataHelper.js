@@ -8,7 +8,7 @@ var TITLES = {
   legend: new Object()
 };
 
-var getNewDataObj = requre('./getNewDataObj.js');
+var getNewDataObj = require('./getNewDataObj.js');
 var IPODATA = getNewDataObj();
 
 parseData();
