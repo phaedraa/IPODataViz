@@ -10,6 +10,8 @@ function getSingleAxisOptionsObj(
 ) {
   return {
     title: { text: title, x: -20 /*center*/ },
+    colors: ['#407c99','#7e1d1d', '#6ccfff', '#fc3b3a'],
+    chart: { renderTo: 'container' , type: 'line' },
     subtitle: { text: subtitle, x: -20 },
     xAxis: { categories: xAxisDataArray },
     yAxis: {

@@ -3,6 +3,7 @@ function getNewDataObj(profitTypeIsPercent = true) {
     techPercProfits: 'techNumProfit',
     otherPercProfits: 'otherNumProfit'
   };
+  
   var dataObj = { techIPOs: [], otherIPOs: [] };
   _.keys(MAP).forEach(function(key) {
     key = getSwitchedKey(key, profitTypeIsPercent);

@@ -49,12 +49,7 @@ function handleSelectRegressionWithScatterPlot() {
       
       return {
         chart: { type: 'scatter', zoomType: 'xy' },
-        // colors: color, // ,'#6ccfff','#7e1d1d','#fc3b3a'],
-        title: { 
-          text: title , 
-          style: { color: color, font: 'bold 16px "Trebuchet MS", Verdana, sans-serif'
-          }
-         },
+        title: { text: title },
         subtitle: { text: subtitle },
         xAxis: {
           title: { enabled: true, text: xTitle },
@@ -104,7 +99,6 @@ function handleSelectRegressionWithScatterPlot() {
       };
 
       function getLineColorRGB(isTech) {
-        // 'rgb(64, 124, 153)'
         return isTech ? 'rgb(0, 0, 0)' : 'rgb(126, 29, 29)';
       }
 

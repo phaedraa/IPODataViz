@@ -2,6 +2,12 @@ function handleSelectDualAxisTimeSeries(event) {
   return $('#chart').highcharts(getOptionsData());
 
   function getOptionsData() {
+    var parsedData = require('./dataHelper.js');
+    var getDualAxisOptionsObj = require('./getDualAxisOptionsObj.js');
+    var getDefaultDualAxisSubtitle = require('./getDefaultDualAxisSubtitle.js');
+    var TITLES = parsedData.TITLES;
+    var IPODATA = parsedData.IPODATA;
+
     return getDualAxisOptionsObj(
       IPODATA.years,
       getSeriesData(),
@@ -16,6 +22,8 @@ function handleSelectDualAxisTimeSeries(event) {
 
     function getSeriesData() {
       var TSData = [];
+      var createSeriesObj = require('./createSeriesObj.js');
+      
       _.keys(IPODATA).forEach(function(key) {
         switch(key) {
           case 'techPercProfits':

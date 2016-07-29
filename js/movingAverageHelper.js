@@ -19,6 +19,8 @@ function handleSelectMovingAvgTimeSeries(event) {
     function getSeriesData() {
       var mvgAvgData = getMovingAvgData();
       var TSData = [];
+      var createSeriesObj = require('./createSeriesObj.js');
+
       _.keys(mvgAvgData).forEach(function(key) {
         TSData.push(createSeriesObj(
           TITLES.legend[key],
@@ -29,6 +31,7 @@ function handleSelectMovingAvgTimeSeries(event) {
       return TSData;
   
       function getMovingAvgData() {
+        var getNewDataObj = require('./getNewDataObj.js');
         var MovingAvgDataObj = getNewDataObj(false);
         for (var j=0; j<IPODATA.years.length; j++) {
           _.keys(MovingAvgDataObj).forEach(function(key) {

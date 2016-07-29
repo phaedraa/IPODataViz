@@ -13,6 +13,7 @@ function getDualAxisOptionsObj(
   return {
     chart: { zoomType: 'xy', alignTicks: false },
     title: { text: title },
+    colors: ['#407c99','#7e1d1d', '#6ccfff', '#fc3b3a'],
     subtitle: {text: subtitle },
     xAxis: [{ categories: xAxisData, crosshair: true }],
     yAxis: [{ // Primary yAxis
